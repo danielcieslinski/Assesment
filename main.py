@@ -1,7 +1,4 @@
-# This is a sample Python script.
-
-# Press Ctrl+F5 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+DEBUG = True
 
 class Watersort:
     def __init__(self,beaker_size, beakers):
@@ -19,10 +16,12 @@ class Watersort:
         :param bn: beaker to move to
         :return: True if success, false otherwise == move disallowed
         """
+        if not 0 > all((an, bn)) > len(self.beakers):
+            return False
+
         if len(self.beakers[an]) != 0 and len(self.beakers[bn]) != self.beaker_size:
             # test color
             if len(self.beakers[bn]) == 0:
-                #TODO move
                 self.beakers[bn].append(self.beakers[an].pop(-1))
                 return True
 
@@ -30,7 +29,8 @@ class Watersort:
                 self.beakers[bn].append(self.beakers[an].pop(-1))
                 return True
 
-        print('Move not allowed')
+        if DEBUG:
+            print('Move not allowed')
         return False
 
     def __repr__(self):
@@ -41,8 +41,6 @@ class Watersort:
 if __name__ == '__main__':
     b = [ [1] , [2,1,2], [2,1] ]
     w = Watersort(3, b)
-    print(w)
     w.move(0,2)
-    print(w)
     w.move(1,2)
 
