@@ -10,6 +10,10 @@ class Watersort:
         self.beaker_size = beaker_size
         self.beakers = beakers
 
+    def __move(self,an, bn):
+        self.beakers[bn].append(self.beakers[an].pop(-1))
+        return True
+
     def move(self,an, bn):
         """
         :param an: beaker to move from
@@ -22,14 +26,13 @@ class Watersort:
             return False
 
         if len(self.beakers[an]) != 0 and len(self.beakers[bn]) != self.beaker_size:
-            # test color
+            # test if the destination in empty
             if len(self.beakers[bn]) == 0:
-                self.beakers[bn].append(self.beakers[an].pop(-1))
-                return True
+                return self.__move(an,bn)
 
+            # test color
             elif self.beakers[an][-1] == self.beakers[bn][-1]:
-                self.beakers[bn].append(self.beakers[an].pop(-1))
-                return True
+                return self.__move(an,bn)
 
         if DEBUG:
             print('Move not allowed')
