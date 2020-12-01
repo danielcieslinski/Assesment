@@ -1,8 +1,9 @@
-DEBUG = True
-from itertools import groupby
+DEBUG = False
+from itertools import groupby, product
 
 
 def all_element_eq(l):
+    if len(l) == 0: return True #Just for the convenience
     return all(x == l[0] for x in l)
 
 class Watersort:
@@ -20,12 +21,15 @@ class Watersort:
 
     def game(self):
         while True:
+            x = self.is_game_finished()
+            if x: print(x); return
             print('BOARD:')
             print(self)
             print('-------')
+            print('Available moves are:', self.available_moves())
             a, b = map(int,input('Enter valid move: ').split())
             self.move(a,b)
-            if not self.moved: print('You must have entered invalid move')
+            # if not self.moved: print('You must have entered invalid move')
             print('-------')
 
     def __move(self,an, bn):
@@ -53,7 +57,8 @@ class Watersort:
 
         #Check if origin not empty
         if len(orig) == 0:
-            print('Trying to pour from empty')
+            if DEBUG:
+                print('Trying to pour from empty')
             return False
 
         chunk = [list(g) for k, g in groupby(orig[::-1])][0]
@@ -65,7 +70,8 @@ class Watersort:
         if dl != chunk[0]:
             # print('colors are different')
             if free_space(dest) < len(chunk):
-                print('Disallowed')
+                if DEBUG:
+                    print('Disallowed')
                 return
 
             for _ in range(len(chunk)):
@@ -73,9 +79,37 @@ class Watersort:
 
         # test color
         elif orig[-1] == dest[-1]:
-            n = free_space(dest) if (free_space(dest) - len(chunk)) else len(chunk)
+            n = free_space(dest) if (free_space(dest) - len(chunk) < 0) else len(chunk)
             for _ in range(n):
                 self.__move(an,bn)
+
+    def is_game_finished(self):
+        """
+        :return: str, when true
+        """
+        if all(list(map(all_element_eq, self.beakers))):
+            return "Won. All either empty or contain only one type"
+        return False
+
+    def simulate_move(self, a, b):
+        cpi = self.__copy__()
+        cpi.move(a,b)
+        moved = cpi.moved
+        del cpi
+        return moved
+
+    def available_moves(self):
+        ava = []
+        s = range(len(self.beakers))
+        for x,y in product(s,s):
+            if self.simulate_move(x,y):
+                ava.append([x,y])
+        return ava
+
+    def __copy__(self):
+        # It does not cover making the copy during the move
+        # i.e the self.moved, but doing this on purpose now
+        return Watersort(self.beaker_size, self.beakers.copy())
 
     def __repr__(self):
         return '\n'.join(list(map(str,self.beakers)))
@@ -89,11 +123,21 @@ def test1(w):
     w.move(1,2)
     w.move(2,0)
 
+def test_bigger():
+    b = [ [1] , [2,1,2], [2,1], [], [] ]
+    w = Watersort(6, b, game_mode=False)
+    w.move(1,2)
+    w.move(0,0)
+    w.is_game_finished()
+    # print(w)
+    # print(w.available_moves())
+
+
 if __name__ == '__main__':
     b = [ [1] , [2,1,2], [2,1] ]
     w = Watersort(3, b, game_mode=True)
-    test0(w)
-    print(w)
+    # test0(w)
+    # test_bigger()
     # assert (w.move(1,2))
 
 
