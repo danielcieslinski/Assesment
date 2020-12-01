@@ -21,15 +21,22 @@ class Watersort:
 
     def game(self):
         while True:
-            x = self.is_game_finished()
-            if x: print(x); return
             print('BOARD:')
             print(self)
             print('-------')
-            print('Available moves are:', self.available_moves())
+
+            # av = self.available_moves()
+
+            # Check for the end
+            # x = self.is_game_finished()
+            # if x: print(x); return
+            # print('Available moves are:',av)
+
             a, b = map(int,input('Enter valid move: ').split())
+            # if [a,b] not in av:
+            #     print('You must have entered invalid move')
+
             self.move(a,b)
-            # if not self.moved: print('You must have entered invalid move')
             print('-------')
 
     def __move(self,an, bn):
@@ -49,6 +56,9 @@ class Watersort:
             if DEBUG:
                 print('Wrong index')
             return False
+
+        # Disallow an == bn
+        if (an == bn): return
 
         dest = self.beakers[bn]
         orig = self.beakers[an]
