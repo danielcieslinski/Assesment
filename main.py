@@ -1,6 +1,5 @@
 DEBUG = True
-from itertools import groupby, repeat
-
+from itertools import groupby
 
 
 def all_element_eq(l):
@@ -24,8 +23,10 @@ class Watersort:
             print('BOARD:')
             print(self)
             print('-------')
-            a,b = input('Enter valid move: <beaker_0> <beaker_1>')
-            self.move(input())
+            a, b = map(int,input('Enter valid move: ').split())
+            self.move(a,b)
+            if not self.moved: print('You must have entered invalid move')
+            print('-------')
 
     def __move(self,an, bn):
         self.beakers[bn].append(self.beakers[an].pop(-1))
@@ -45,12 +46,10 @@ class Watersort:
                 print('Wrong index')
             return False
 
-
         dest = self.beakers[bn]
         orig = self.beakers[an]
 
         free_space = lambda x: self.beaker_size - len(x)
-
 
         #Check if origin not empty
         if len(orig) == 0:
@@ -58,23 +57,25 @@ class Watersort:
             return False
 
         chunk = [list(g) for k, g in groupby(orig[::-1])][0]
-        print('Chunk', chunk)
+        # print('Chunk', chunk)
+
         #assert(all_element_eq(chunk))
+        dl = dest[-1] if len(dest) > 0 else -1
 
-        destination_last_color = None
-        try: destination_last_color = self.beakers[bn][-1]
-        except: pass
-
-        if destination_last_color != chunk[0]:
+        if dl != chunk[0]:
+            # print('colors are different')
             if free_space(dest) < len(chunk):
                 print('Disallowed')
                 return
-            repeat(self.__move(an, bn), len(chunk))
+
+            for _ in range(len(chunk)):
+                self.__move(an, bn)
 
         # test color
         elif orig[-1] == dest[-1]:
             n = free_space(dest) if (free_space(dest) - len(chunk)) else len(chunk)
-            return repeat(self.__move(an,bn), n)
+            for _ in range(n):
+                self.__move(an,bn)
 
     def __repr__(self):
         return '\n'.join(list(map(str,self.beakers)))
@@ -84,11 +85,15 @@ def test0(w):
     w.move(1,2)
     w.move(1,2)
 
+def test1(w):
+    w.move(1,2)
+    w.move(2,0)
 
 if __name__ == '__main__':
     b = [ [1] , [2,1,2], [2,1] ]
-    w = Watersort(3, b)
+    w = Watersort(3, b, game_mode=True)
+    test0(w)
+    print(w)
     # assert (w.move(1,2))
 
-    print(w)
 

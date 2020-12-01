@@ -1,8 +1,8 @@
 # Watersort
 
-Class takes max beaker size and initial beakers fill.
+Module implements class Watersort
+Description in the file.
+For the interactive mode run:
+	`./main.py`
 
-To move from beaker A to B, simply:
-	waterort.move(a,b)
-
-where a and b, are valid beakers indexes
+//TODO ask for init
