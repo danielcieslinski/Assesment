@@ -16,7 +16,9 @@ class Watersort:
         :param bn: beaker to move to
         :return: True if success, false otherwise == move disallowed
         """
-        if not 0 > all((an, bn)) > len(self.beakers):
+        if any((an,bn)) > len(self.beakers) or any((an,bn)) < 0:
+            if DEBUG:
+                print('Wrong index')
             return False
 
         if len(self.beakers[an]) != 0 and len(self.beakers[bn]) != self.beaker_size:
@@ -41,6 +43,9 @@ class Watersort:
 if __name__ == '__main__':
     b = [ [1] , [2,1,2], [2,1] ]
     w = Watersort(3, b)
-    w.move(0,2)
-    w.move(1,2)
+    # print(w)
+    # w.move(,1)
+    # assert (w.move(1,2))
+
+    print(w)
 
